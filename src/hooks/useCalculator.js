@@ -6,7 +6,7 @@ const doMath = (num1, num2, op) => {
       return num1 + num2;
     case '-':
       return num1 - num2;
-    case 'X':
+    case 'x':
       return num1 * num2;
     case '/':
       return (num1 / num2).toFixed(2);
@@ -27,19 +27,65 @@ const calculateResult = (stack) => {
     : `${stack[0]} ${stack[1]} ${stack[2]}`;
 };
 
-const handleNumber = (stack, key) => {
-  if (stack.length === 0) {
-    stack.push(parseInt(key.label));
-  } else if (stack.length === 1) {
-    const oldValue = stack.pop();
-    stack.push(oldValue * 10 + parseInt(key.label));
-  } else if (stack.length === 2) {
-    stack.push(key.label);
-  } else if (stack.length === 3) {
-    const oldValue = stack.pop();
-    stack.push(oldValue * 10 + parseInt(key.label));
-  } else {
-    console.error('Error occurred!');
+const handleNumber = (stack, setStack, key) => {
+  switch (stack.length) {
+    case 0:
+      if (key.label === '0') {
+        return;
+      }
+      stack.push(parseInt(key.label));
+      break;
+    case 1:
+      stack.push(stack.pop() * 10 + parseInt(key.label));
+      break;
+    case 2:
+      stack.push(parseInt(key.label));
+      break;
+    case 3:
+      stack.push(stack.pop() * 10 + parseInt(key.label));
+      break;
+    default:
+      break;
+  }
+
+  setStack([...stack]);
+};
+
+const handleOperation = (stack, setStack, key) => {
+  switch (stack.length) {
+    case 1:
+      stack.push(key.label);
+      break;
+    case 3:
+      setStack([compute(stack), key.label]);
+      break;
+    default:
+      break;
+  }
+};
+
+const handleOther = (stack, setStack, key) => {
+  switch (key.label) {
+    case '=':
+      setStack([compute(stack)]);
+      break;
+    case 'AC':
+      setStack([]);
+      break;
+    case '%':
+      if (stack.length === 1) {
+        setStack([parseInt(stack[0]) / 100]);
+      } else if (stack.length === 3) {
+        setStack([compute(stack) / 100]);
+      }
+      break;
+    case '+/-':
+      if (stack.length === 1) {
+        setStack([parseInt(stack[0]) * -1]);
+      }
+      break;
+    default:
+      break;
   }
 };
 
@@ -53,40 +99,23 @@ function useCalculator() {
   }, [stack]);
 
   const makeCalculation = (key) => {
+    if (!key || !key.label || !key.type) {
+      return;
+    }
+
     switch (key.type) {
       case 'number':
-        handleNumber(stack, key);
+        handleNumber(stack, setStack, key);
         break;
       case 'operation':
-        if (stack.length === 1) {
-          console.log(key.label);
-          stack.push(key.label);
-        } else if (stack.length === 3) {
-          setStack([compute(stack), key.label]);
-          return;
-        }
+        handleOperation(stack, setStack, key);
         break;
       case 'other':
-        console.log(key.label);
-        if (key.label === '=') {
-          setStack([compute(stack)]);
-          return;
-        } else if (key.label === 'AC') {
-          setStack([]);
-          return;
-        } else if (key.label === '%') {
-          if (stack.length === 1) {
-            setStack([parseInt(stack[0]) / 100]);
-          } else if (stack.length === 3) {
-            setStack([compute(stack) / 100]);
-          }
-          return;
-        }
+        handleOther(stack, setStack, key);
         break;
       default:
         console.log(key.label);
     }
-    setStack([...stack]);
   };
 
   return { result, makeCalculation };

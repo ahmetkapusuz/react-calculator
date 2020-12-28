@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { keys } from '../utils';
 
 const KeypadContainer = styled.div`
   position: absolute;
@@ -32,7 +33,7 @@ const Key = styled.button`
       ? '#c32f27'
       : '#ffffff'};
   box-shadow: 3px 3px 5px 2px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
+  cursor: ${({ disabled }) => !disabled && 'pointer'};
   border: none;
 
   &:hover {
@@ -43,89 +44,6 @@ const Key = styled.button`
     transform: scale(0.99);
   }
 `;
-
-const keys = [
-  {
-    label: 'AC',
-    type: 'other',
-  },
-  {
-    label: '+/-',
-    type: 'other',
-  },
-  {
-    label: '%',
-    type: 'other',
-  },
-  {
-    label: '/',
-    type: 'operation',
-  },
-  {
-    label: '7',
-    type: 'number',
-  },
-  {
-    label: '8',
-    type: 'number',
-  },
-  {
-    label: '9',
-    type: 'number',
-  },
-  {
-    label: 'X',
-    type: 'operation',
-  },
-  {
-    label: '4',
-    type: 'number',
-  },
-  {
-    label: '5',
-    type: 'number',
-  },
-  {
-    label: '6',
-    type: 'number',
-  },
-  {
-    label: '-',
-    type: 'operation',
-  },
-  {
-    label: '1',
-    type: 'number',
-  },
-  {
-    label: '2',
-    type: 'number',
-  },
-  {
-    label: '3',
-    type: 'number',
-  },
-  {
-    label: '+',
-    type: 'operation',
-  },
-  {
-    label: '',
-    type: 'number',
-  },
-  {
-    label: '0',
-    type: 'number',
-  },
-  {
-    label: '.',
-    type: 'number',
-  },
-  {
-    label: '=',
-    type: 'other',
-  },
-];
 
 const findKey = (keyValue) => keys.find((key) => keyValue === key.label);
 
@@ -139,6 +57,7 @@ const Keypad = ({ onKeyClicked }) => {
           onClick={() => {
             onKeyClicked(findKey(key.label));
           }}
+          disabled={key.label === ''}
         >
           {key.label}
         </Key>
