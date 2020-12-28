@@ -14,21 +14,11 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Audiowide', cursive;
   }
 
-  // Below CSS is from normalize.css
-  /**
-  * 1. Change the font styles in all browsers.
-  * 2. Remove the margin in Firefox and Safari.
-  */
-
-  button,
-  input,
-  optgroup,
-  select,
-  textarea {
-    font-family: inherit; /* 1 */
-    font-size: 100%; /* 1 */
-    line-height: 1.15; /* 1 */
-    margin: 0; /* 2 */
+  button {
+    font-family: inherit; 
+    font-size: 100%; 
+    line-height: 1.15; 
+    margin: 0; 
   }
 
   /**
@@ -36,8 +26,7 @@ const GlobalStyle = createGlobalStyle`
   * 1. Show the overflow in Edge.
   */
 
-  button,
-  input { /* 1 */
+  button {
     overflow: visible;
   }
 
@@ -46,8 +35,7 @@ const GlobalStyle = createGlobalStyle`
   * 1. Remove the inheritance of text transform in Firefox.
   */
 
-  button,
-  select { /* 1 */
+  button { 
     text-transform: none;
   }
 
@@ -61,6 +49,11 @@ const GlobalStyle = createGlobalStyle`
   [type="submit"] {
     -webkit-appearance: button;
   }
+
+  button:focus {
+      outline: none;
+  }
+
 `;
 
 ReactDOM.render(

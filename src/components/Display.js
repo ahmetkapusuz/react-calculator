@@ -11,6 +11,7 @@ const DisplayContainer = styled.div`
   position: absolute;
   top: 0;
   padding: 20px;
+  overflow: hidden;
 `;
 
 const Operation = styled.div`
@@ -23,11 +24,11 @@ const Result = styled.div`
   font-weight: bold;
 `;
 
-const Display = () => {
+const Display = ({ operation = '', result = '' }) => {
   return (
     <DisplayContainer>
-      <Operation>12 x 10</Operation>
-      <Result>120</Result>
+      <Operation>{operation}</Operation>
+      <Result>{result}</Result>
     </DisplayContainer>
   );
 };

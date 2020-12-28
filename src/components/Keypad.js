@@ -34,6 +34,14 @@ const Key = styled.button`
   box-shadow: 3px 3px 5px 2px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   border: none;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  &:active {
+    transform: scale(0.99);
+  }
 `;
 
 const keys = [
@@ -115,15 +123,23 @@ const keys = [
   },
   {
     label: '=',
-    type: 'operation',
+    type: 'other',
   },
 ];
 
-const Keypad = () => {
+const findKey = (keyValue) => keys.find((key) => keyValue === key.label);
+
+const Keypad = ({ onKeyClicked }) => {
   return (
     <KeypadContainer>
       {keys.map((key) => (
-        <Key key={`${key.type}-${key.label}`} type={key.type}>
+        <Key
+          key={`${key.type}-${key.label}`}
+          type={key.type}
+          onClick={() => {
+            onKeyClicked(findKey(key.label));
+          }}
+        >
           {key.label}
         </Key>
       ))}
