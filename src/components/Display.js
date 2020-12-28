@@ -14,20 +14,14 @@ const DisplayContainer = styled.div`
   overflow: hidden;
 `;
 
-const Operation = styled.div`
-  font-size: 20px;
-  color: #c2c2c2;
-`;
-
 const Result = styled.div`
   font-size: 40px;
   font-weight: bold;
 `;
 
-const Display = ({ operation = '', result = '' }) => {
+const Display = ({ result = '' }) => {
   return (
     <DisplayContainer>
-      <Operation>{operation}</Operation>
       <Result>{result}</Result>
     </DisplayContainer>
   );
