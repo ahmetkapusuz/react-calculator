@@ -50,9 +50,9 @@ const findKey = (keyValue) => keys.find((key) => keyValue === key.label);
 const Keypad = ({ onKeyClicked }) => {
   return (
     <KeypadContainer>
-      {keys.map((key) => (
+      {keys.map((key, index) => (
         <Key
-          key={`${key.type}-${key.label}`}
+          key={`${key.type}-${key.label}-${index}`}
           type={key.type}
           onClick={() => {
             onKeyClicked(findKey(key.label));
