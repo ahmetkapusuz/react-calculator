@@ -31,7 +31,7 @@ const calculate = ({ result, nextNumber, operation }) =>
     math
       .format(doMath(result, nextNumber, operation), {
         notation: 'fixed',
-        precision: 12,
+        precision: 10,
       })
       .toString()
   ).toString();
