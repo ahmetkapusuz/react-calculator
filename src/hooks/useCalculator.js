@@ -27,7 +27,14 @@ const doMath = (num1, num2, op) => {
 };
 
 const calculate = ({ result, nextNumber, operation }) =>
-  doMath(result, nextNumber, operation).toString();
+  parseFloat(
+    math
+      .format(doMath(result, nextNumber, operation), {
+        notation: 'fixed',
+        precision: 12,
+      })
+      .toString()
+  ).toString();
 
 const handleNumber = ({ result, nextNumber, operation }, key) => {
   // If user pressed 0 and there is no other number entered return empty object
