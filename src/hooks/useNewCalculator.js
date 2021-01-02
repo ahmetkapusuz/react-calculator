@@ -76,6 +76,21 @@ const handleOther = ({ result, nextNumber, operation }, key) => {
     case 'AC':
       return { result: null, nextNumber: null, operation: null };
     case '%':
+      if (operation && nextNumber) {
+        const calculatedValue = calculate({ result, nextNumber, operation });
+
+        return {
+          result: parseFloat(calculatedValue / 100).toString(),
+          nextNumber: null,
+          operation: null,
+        };
+      }
+
+      if (nextNumber) {
+        return {
+          nextNumber: parseFloat(nextNumber / 100).toString(),
+        };
+      }
       return {};
     case '+/-':
       if (nextNumber) {
