@@ -1,22 +1,33 @@
 import { useState } from 'react';
+import * as math from 'mathjs';
 
 const doMath = (num1, num2, op) => {
+  const firstNumber = math.bignumber(num1 || '0');
+  const secondNumber = math.bignumber(
+    num2 || (op === '÷' || op === 'x' ? '1' : '0')
+  );
+
   switch (op) {
     case '+':
-      return num1 + num2;
+      return math.add(firstNumber, secondNumber);
     case '-':
-      return num1 - num2;
+      return math.subtract(firstNumber, secondNumber);
     case 'x':
-      return num1 * num2;
+      return math.multiply(firstNumber, secondNumber);
     case '/':
-      return (num1 / num2).toFixed(2);
+      // Avoid divide by zero error
+      if (secondNumber.toString() === '0') {
+        return firstNumber;
+      }
+
+      return math.divide(firstNumber, secondNumber);
     default:
       return 0;
   }
 };
 
 const calculate = ({ result, nextNumber, operation }) =>
-  doMath(parseFloat(result), parseFloat(nextNumber), operation);
+  doMath(result, nextNumber, operation).toString();
 
 const handleNumber = ({ result, nextNumber, operation }, key) => {
   // If user pressed 0 and there is no other number entered return empty object
@@ -80,7 +91,7 @@ const handleOther = ({ result, nextNumber, operation }, key) => {
         const calculatedValue = calculate({ result, nextNumber, operation });
 
         return {
-          result: parseFloat(calculatedValue / 100).toString(),
+          result: math.divide(calculatedValue, 100).toString(),
           nextNumber: null,
           operation: null,
         };
@@ -88,17 +99,17 @@ const handleOther = ({ result, nextNumber, operation }, key) => {
 
       if (nextNumber) {
         return {
-          nextNumber: parseFloat(nextNumber / 100).toString(),
+          nextNumber: math.divide(nextNumber, 100).toString(),
         };
       }
       return {};
     case '+/-':
       if (nextNumber) {
-        return { nextNumber: (-1 * parseFloat(nextNumber)).toString() };
+        return { nextNumber: (-1 * math.bignumber(nextNumber)).toString() };
       }
 
       if (result) {
-        return { result: (-1 * parseFloat(result)).toString() };
+        return { result: (-1 * math.bignumber(result)).toString() };
       }
 
       return {};
