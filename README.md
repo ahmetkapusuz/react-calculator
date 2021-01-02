@@ -1,4 +1,4 @@
-# React Hesap Makinesi
+# React Calculator
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/543b12db-28b7-48d4-8906-45b8da9adacf/deploy-status)](https://app.netlify.com/sites/react-awesome-calculator/deploys)
 
