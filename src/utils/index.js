@@ -72,7 +72,7 @@ export const keys = [
     type: 'number',
   },
   {
-    label: '',
+    label: '.',
     type: 'other',
   },
   {

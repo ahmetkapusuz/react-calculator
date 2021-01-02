@@ -102,6 +102,16 @@ const handleOther = ({ result, nextNumber, operation }, key) => {
       }
 
       return {};
+    case '.':
+      if (nextNumber) {
+        if (nextNumber.includes('.')) {
+          return {};
+        }
+
+        return { nextNumber: nextNumber + '.' };
+      }
+
+      return { nextNumber: '0.' };
     default:
       break;
   }
