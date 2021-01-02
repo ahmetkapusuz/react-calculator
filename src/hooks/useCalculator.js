@@ -158,11 +158,9 @@ function useNewCalculator() {
         setState({ ...state, ...handleOther(state, key) });
         break;
       default:
-        console.log(key.label);
+        break;
     }
   };
-
-  console.log('state', state);
 
   return { result: state.nextNumber || state.result || '0', makeCalculation };
 }

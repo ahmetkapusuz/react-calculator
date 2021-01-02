@@ -8,6 +8,7 @@ const MainContainer = styled.main`
   background-color: #dfdede;
   justify-content: center;
   align-items: center;
+  padding: 8px;
 `;
 
 function App() {
