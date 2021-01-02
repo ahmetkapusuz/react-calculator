@@ -94,6 +94,9 @@ const handleOther = ({ result, nextNumber, operation }, key) => {
     case 'AC':
       return { result: null, nextNumber: null, operation: null };
     case '%':
+      console.log('operation', operation);
+      console.log('nextNumber', nextNumber);
+      console.log('result', result);
       if (operation && nextNumber) {
         const calculatedValue = calculate({ result, nextNumber, operation });
 
@@ -109,6 +112,13 @@ const handleOther = ({ result, nextNumber, operation }, key) => {
           nextNumber: math.divide(nextNumber, 100).toString(),
         };
       }
+
+      if (result) {
+        return {
+          nextNumber: math.divide(result, 100).toString(),
+        };
+      }
+
       return {};
     case '+/-':
       if (nextNumber) {
@@ -135,6 +145,13 @@ const handleOther = ({ result, nextNumber, operation }, key) => {
   }
 };
 
+// Handle functions for key types: number, operation and other
+const handleFunction = {
+  number: handleNumber,
+  operation: handleOperation,
+  other: handleOther,
+};
+
 function useNewCalculator() {
   const [state, setState] = useState({
     result: null,
@@ -147,19 +164,7 @@ function useNewCalculator() {
       return;
     }
 
-    switch (key.type) {
-      case 'number':
-        setState({ ...state, ...handleNumber(state, key) });
-        break;
-      case 'operation':
-        setState({ ...state, ...handleOperation(state, key) });
-        break;
-      case 'other':
-        setState({ ...state, ...handleOther(state, key) });
-        break;
-      default:
-        break;
-    }
+    setState({ ...state, ...handleFunction[key.type](state, key) });
   };
 
   return { result: state.nextNumber || state.result || '0', makeCalculation };
