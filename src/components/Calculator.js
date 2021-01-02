@@ -21,6 +21,8 @@ const Container = styled.div`
 const Calculator = () => {
   const { result, makeCalculation } = useCalculator();
 
+  console.log('result', result);
+
   const handleOnKeyClicked = (key) => {
     makeCalculation(key);
   };

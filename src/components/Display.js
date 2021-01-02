@@ -19,7 +19,7 @@ const Result = styled.div`
   font-weight: bold;
 `;
 
-const Display = ({ result = '' }) => {
+const Display = ({ result = '0' }) => {
   return (
     <DisplayContainer>
       <Result>{result}</Result>
