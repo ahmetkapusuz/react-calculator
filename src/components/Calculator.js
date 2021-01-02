@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Display from './Display';
 import Keypad from './Keypad';
-import useNewCalculator from '../hooks/useNewCalculator';
+import useCalculator from '../hooks/useCalculator';
 
 const Container = styled.div`
   display: flex;
@@ -19,7 +19,7 @@ const Container = styled.div`
 `;
 
 const Calculator = () => {
-  const { result, makeCalculation } = useNewCalculator();
+  const { result, makeCalculation } = useCalculator();
 
   console.log('result', result);
 

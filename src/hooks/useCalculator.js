@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const doMath = (num1, num2, op) => {
   switch (op) {
@@ -15,88 +15,104 @@ const doMath = (num1, num2, op) => {
   }
 };
 
-const compute = (stack) => {
-  return doMath(parseInt(stack[0]), parseInt(stack[2]), stack[1]);
-};
+const calculate = ({ result, nextNumber, operation }) =>
+  doMath(parseFloat(result), parseFloat(nextNumber), operation);
 
-const calculateResult = (stack) => {
-  return stack.length === 0
-    ? '0'
-    : stack.length === 1 || stack.length === 2
-    ? `${stack[0]}`
-    : `${stack[0]} ${stack[1]} ${stack[2]}`;
-};
-
-const handleNumber = (stack, setStack, key) => {
-  switch (stack.length) {
-    case 0:
-      if (key.label === '0') {
-        return;
-      }
-      stack.push(parseInt(key.label));
-      break;
-    case 1:
-      stack.push(stack.pop() * 10 + parseInt(key.label));
-      break;
-    case 2:
-      stack.push(parseInt(key.label));
-      break;
-    case 3:
-      stack.push(stack.pop() * 10 + parseInt(key.label));
-      break;
-    default:
-      break;
+const handleNumber = ({ result, nextNumber, operation }, key) => {
+  // If user pressed 0 and there is no other number entered return empty object
+  if (key.label === '0' && !nextNumber) {
+    return {};
   }
 
-  setStack([...stack]);
-};
-
-const handleOperation = (stack, setStack, key) => {
-  switch (stack.length) {
-    case 1:
-      stack.push(key.label);
-      break;
-    case 3:
-      setStack([compute(stack), key.label]);
-      break;
-    default:
-      break;
+  // If there is an operation
+  if (operation) {
+    // If there is already a number entered before, update the number by adding pressed number to the end
+    // If this is the first number, set nextNumber as key label
+    return {
+      nextNumber: nextNumber ? nextNumber + key.label : key.label,
+    };
+  } else {
+    // If there is no nextNumber or nextNumber is 0 return key label as nextNumber
+    // If there is a nextNumber add pressed key value to the end of the number
+    return {
+      nextNumber:
+        !nextNumber || nextNumber === '0' ? key.label : nextNumber + key.label,
+      result: null,
+    };
   }
 };
 
-const handleOther = (stack, setStack, key) => {
+const handleOperation = ({ result, nextNumber, operation }, key) => {
+  // If there is an operation, calculate result and update operation with new key
+  if (operation) {
+    return {
+      result: calculate({ result, nextNumber, operation }),
+      nextNumber: null,
+      operation: key.label,
+    };
+  }
+
+  // If no number yet, save operation
+  if (!nextNumber) {
+    return { operation: key.label };
+  }
+
+  // If there is no operation yet, update result with the number
+  return {
+    result: nextNumber,
+    nextNumber: null,
+    operation: key.label,
+  };
+};
+
+const handleOther = ({ result, nextNumber, operation }, key) => {
   switch (key.label) {
     case '=':
-      setStack([compute(stack)]);
-      break;
+      return {
+        result: calculate({ result, nextNumber, operation }),
+        nextNumber: null,
+        operation: null,
+      };
     case 'AC':
-      setStack([]);
-      break;
+      return { result: null, nextNumber: null, operation: null };
     case '%':
-      if (stack.length === 1) {
-        setStack([parseInt(stack[0]) / 100]);
-      } else if (stack.length === 3) {
-        setStack([compute(stack) / 100]);
+      if (operation && nextNumber) {
+        const calculatedValue = calculate({ result, nextNumber, operation });
+
+        return {
+          result: parseFloat(calculatedValue / 100).toString(),
+          nextNumber: null,
+          operation: null,
+        };
       }
-      break;
+
+      if (nextNumber) {
+        return {
+          nextNumber: parseFloat(nextNumber / 100).toString(),
+        };
+      }
+      return {};
     case '+/-':
-      if (stack.length === 1) {
-        setStack([parseInt(stack[0]) * -1]);
+      if (nextNumber) {
+        return { nextNumber: (-1 * parseFloat(nextNumber)).toString() };
       }
-      break;
+
+      if (result) {
+        return { result: (-1 * parseFloat(result)).toString() };
+      }
+
+      return {};
     default:
       break;
   }
 };
 
-function useCalculator() {
-  const [stack, setStack] = useState([]);
-  const [result, setResult] = useState('');
-
-  useEffect(() => {
-    console.log('stack', stack);
-    setResult(calculateResult(stack));
-  }, [stack]);
+function useNewCalculator() {
+  const [state, setState] = useState({
+    result: null,
+    nextNumber: null,
+    operation: null,
+  });
 
   const makeCalculation = (key) => {
     if (!key || !key.label || !key.type) {
@@ -105,20 +121,22 @@ function useCalculator() {
 
     switch (key.type) {
       case 'number':
-        handleNumber(stack, setStack, key);
+        setState({ ...state, ...handleNumber(state, key) });
         break;
       case 'operation':
-        handleOperation(stack, setStack, key);
+        setState({ ...state, ...handleOperation(state, key) });
         break;
       case 'other':
-        handleOther(stack, setStack, key);
+        setState({ ...state, ...handleOther(state, key) });
         break;
       default:
         console.log(key.label);
     }
   };
 
-  return { result, makeCalculation };
+  console.log('state', state);
+
+  return { result: state.nextNumber || state.result || '0', makeCalculation };
 }
 
-export default useCalculator;
+export default useNewCalculator;
